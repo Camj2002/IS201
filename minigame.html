@@ -63,7 +63,7 @@
       border: none;
       border-radius: 10px;
       transition: transform 0.1s ease;
-      margin-bottom: 10px; /* Added space below the button */
+      margin-bottom: 10px;
     }
 
     #moneyButton:hover {
@@ -95,19 +95,6 @@
     button.upgrade:hover {
       transform: scale(1.1);
     }
-
-    /* Go Back Link */
-    #backLink {
-      margin-top: auto; /* Push to the bottom of the white box */
-      padding: 10px;
-      color: #007bff;
-      text-decoration: none;
-      font-size: 14px;
-    }
-
-    #backLink:hover {
-      text-decoration: underline;
-    }
   </style>
 </head>
 <body>
@@ -115,49 +102,89 @@
     <div>
       <h1>💸 Advanced Money Clicker Game 💸</h1>
       <h3>💰 Money: $<span id="money">0</span></h3>
-      <p>Click the button to earn money! After purchasing the upgrade, you will earn double per click.</p>
+      <p>Click the button to earn money! After purchasing upgrades, you will earn more money with upgrades.</p>
 
-      <!-- Money Button with added spacing -->
+      <!-- Money Button -->
       <button id="moneyButton" onclick="addMoney()">💸 Click to Earn Money</button>
 
       <!-- Always Visible Upgrade Store -->
       <div id="store">
         <h3>🛒 Store - Purchase Upgrades 🛒</h3>
         <button class="upgrade" onclick="buyClickMultiplier()">Buy Click Multiplier ($<span id="upgradeCost">10</span>)</button>
+        <button class="upgrade" onclick="buyAutoClicker()">Buy Auto Clicker ($<span id="autoClickerCost">50</span>)</button>
+        <button class="upgrade" onclick="buyPassiveIncome()">Buy Passive Income ($<span id="passiveIncomeCost">30</span>)</button>
       </div>
       <br>
-      <br>
-
-    <!-- Back to other page link -->
-    <a href="scratch.html" id="backLink">Click <u>here</u> to go back</a>
+      <a href="scratch.html" id="backLink">Click <u>here</u> to go back</a>
+    </div>
   </div>
 
   <script>
-    let money = 0; // Total money counter
-    let baseClickValue = 1; // Default earnings
-    let hasClickMultiplier = false; // Whether the player purchased the upgrade
-    let upgradeCost = 10; // Initial cost for first upgrade
+    let money = 0;
+    let baseClickValue = 1;
+    let hasClickMultiplier = false;
+    let autoClickerActive = false;
+    let passiveIncomeInterval;
+    let passiveIncomeRate = 1; // Tracks the current passive income rate
+    let autoClickerInterval;
+    let upgradeCost = 10;
+    let autoClickerCost = 50;
+    let passiveIncomeCost = 30;
 
     function addMoney() {
-      // Earn 2x per click only if the upgrade is purchased
       let earningsThisClick = hasClickMultiplier ? baseClickValue * 2 : baseClickValue;
-
       money += earningsThisClick;
       document.getElementById('money').innerText = money;
     }
 
     function buyClickMultiplier() {
       if (money >= upgradeCost) {
-        money -= upgradeCost; // Deduct cost
-        hasClickMultiplier = true; // Allow double money per click
-        baseClickValue *= 2; // Double the click value
+        money -= upgradeCost;
+        hasClickMultiplier = true;
+        baseClickValue *= 2;
         document.getElementById('money').innerText = money;
 
-        // Update cost by multiplying by 5
         upgradeCost *= 5;
         document.getElementById('upgradeCost').innerText = upgradeCost;
 
         alert('Click Multiplier Purchased! You now earn double per click!');
+      } else {
+        alert('Not enough money!');
+      }
+    }
+
+    function buyAutoClicker() {
+      if (money >= autoClickerCost) {
+        money -= autoClickerCost;
+        autoClickerActive = true;
+
+        clearInterval(autoClickerInterval);
+        autoClickerInterval = setInterval(addMoney, 1000);
+
+        autoClickerCost *= 5;
+        document.getElementById('autoClickerCost').innerText = autoClickerCost;
+
+        alert('Auto Clicker Purchased! You now earn money automatically!');
+      } else {
+        alert('Not enough money!');
+      }
+    }
+
+    function buyPassiveIncome() {
+      if (money >= passiveIncomeCost) {
+        money -= passiveIncomeCost;
+
+        clearInterval(passiveIncomeInterval);
+        passiveIncomeRate *= 2;
+        passiveIncomeInterval = setInterval(() => {
+          money += passiveIncomeRate;
+          document.getElementById('money').innerText = money;
+        }, 1000);
+
+        passiveIncomeCost *= 5;
+        document.getElementById('passiveIncomeCost').innerText = passiveIncomeCost;
+
+        alert(`Passive Income Purchased! You now earn $${passiveIncomeRate} per second!`);
       } else {
         alert('Not enough money!');
       }
