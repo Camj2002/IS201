@@ -1,0 +1,20 @@
+/*
+Cameron Johnson
+Section 001
+DEC 12, 2024
+*/
+
+body {
+    background-color: rgb(29, 191, 29);
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    color: black;
+}
+
+title {
+    color: rgb(136, 216, 136);
+}
+
+link {
+    font-weight: bold;
+    color: blue;
+}
